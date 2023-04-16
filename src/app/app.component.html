@@ -1,5 +1,6 @@
+<app-header></app-header>
 <h1>Hello {{ title }}</h1>
-<!-- here title is in interpolation, it is used to pass our objects, properties or functions or variables from to ts to html for ex see below-->
+<!--👉 here title is in interpolation, it is used to pass our objects, properties or functions or variables from to ts to html for ex see below-->
 <p>accessing title = {{ getTitle() }}</p>
 <p>accessing object = {{ obj.name }} {{ obj.age }}</p>
 <p>accessing array = {{ arr }}</p>
@@ -8,7 +9,7 @@
 
 <!-- we can't assign values using interpolation and we can't use window object in interpolation-->
 
-<!-- component :-  -->
+<!--👉 component :-  -->
 <app-user-list></app-user-list>
 <h2>Angular Module</h2>
 <app-login></app-login>
@@ -38,24 +39,24 @@
 
 <button (click)="getVal(box.value)">get value</button>
 
-<!-- property binding [] it handles dynamic attributes so allows dynamic values or functions & interpolation{{}} it's exclusively for string it doesn't allow assigning value or {{windows.location.href}}-->
+<!--👉 property binding [] it handles dynamic attributes so allows dynamic values or functions & interpolation{{}} it's exclusively for string it doesn't allow assigning value or {{windows.location.href}}-->
 
 <br />
 <br />
 <input type="text" [disabled]="disabledBox" value="{{ name }}" />
-<!-- property binding-->
+<!--👉 property binding-->
 <!-- or -->
 <br />
 <br />
-<!-- interpolation-->
+<!--👉 interpolation-->
 <input type="text" disabled="{{ disabledBox }}" [value]="name" />
 <br />
 <br />
 <button (click)="enableBox()">enable textbox</button>
 
-<!-- hence clearly we can see that property binding enabled on button click but interpolation doesn't so this dynamic transformation is only with it -->
+<!--👉 hence clearly we can see that property binding enabled on button click but interpolation doesn't so this dynamic transformation is only with it or we can say property binding alone can handle attribute-->
 
-<!-- conditions in angular -->
+<!--👉 conditions in angular -->
 
 <h1 *ngIf="show; else elseBlock">if block</h1>
 <ng-template #elseBlock> else block</ng-template>
@@ -77,3 +78,257 @@
 <ng-template [ngIf]="color == 'violet'">
   <div>violet Block</div>
 </ng-template>
+
+<!--👉 switch case in angular [ngSwitch] -->
+
+<div [ngSwitch]="color">
+  <h2 *ngSwitchCase="'red'">red color</h2>
+  <h2 *ngSwitchCase="'violet'">violet color</h2>
+  <h2 *ngSwitchCase="'green'">green color</h2>
+  <h2 *ngSwitchCase="'yellow'">yellow color</h2>
+</div>
+
+<h4>for loop in Angular</h4>
+<table border="1" style="border: 1px solid">
+  <tr>
+    <td>Name</td>
+    <td>age</td>
+    <td>E-mail</td>
+  </tr>
+  <tr *ngFor="let item of data">
+    <td>
+      {{ item.name }}
+    </td>
+    <td>
+      {{ item.age }}
+    </td>
+    <td>
+      {{ item.email }}
+    </td>
+  </tr>
+</table>
+
+<br />
+<br />
+<!--👉 simple form in angular : go to app module.ts and import formsModule from angular/Forms also add formsModule in import section below there. form must have a id to which (ngForm) will assigned , now add a function to event (ngSubmit)-->
+<form #simpleForm="ngForm" (ngSubmit)="getUserValue(simpleForm.value)">
+  <!-- argument will pass this form value to function-->
+  <input type="text" ngModel name="userName" placeholder="enter name" />
+  <br /><br />
+  <!--now add ngModel to each field with connects fields to form-->
+  <input type="text" ngModel name="age" placeholder="enter age" /><br /><br />
+  <input
+    type="text"
+    ngModel
+    name="address"
+    placeholder="enter address"
+  /><br /><br />
+  <button>Get Values</button>
+</form>
+
+<!-- make reusable Header and footer component -->
+
+<!--👉 style binding , use style.any css property enclosed with square bracket and assign values enclosed with both double and single quotes  -->
+<h3 [style.color]="'red'">header by style binding</h3>
+<!--👉 dynamic style, define a variable with value in ts file and user that variable here as value it will pass the provided value in ts  👇  -->
+<h3 [style.color]="color">header by dynamic style</h3>
+<!--here single quote is not required-->
+<button (click)="changeCol()">change color</button>
+
+<br />
+<br />
+<!-- conditional style 👇 -->
+<h3 [style.color]="err ? 'red' : 'green'">header by conditional style</h3>
+
+<!--👉 to add bootStrap in angular project we have to run 👉 ng add @ng-bootstrap/ng-bootstrap in command line-->
+
+<p *ngFor="let alert of alerts">
+  <ngb-alert [type]="alert.type" (closed)="close(alert)">{{
+    alert.message
+  }}</ngb-alert>
+</p>
+<p>
+  <button type="button" class="btn btn-primary" (click)="reset()">Reset</button>
+</p>
+
+<!--👉 material ui in angular  run command 👉 ng add @angular/material in terminal -->
+<!-- now for ex we can use a material button , import in app module as import {MatButtonModule} from '@angular/material/button' also register it in imports in the same file , now here or anywhere in html file use button-->
+<button mat-button>Mat button</button>
+<mat-slider min="1" max="100" step="1" value="5"></mat-slider>
+
+<!--👉 pass data from parent to child : make a users component make it child of app component pass data from app component to child component and display there -->
+<h3>pass data from parent to child component</h3>
+<!--👉 first declare a variable in  parent's TS file then in child comp's selector (where it is being used) write a token(any name by which you want to access) in property bind way and assign it the variable declared in parent's ts as👇 then go to child comps ts include input in import list from @angular/core and then write @input() yourTokenNameWhatever before constructor, then go to child comp's html and use {{tokenName or tokenName.field(in case of obj)}}  -->
+<!--<app-child-comp [yourTokenNameWhatever as inherit2 below 👇]="parentToChild"></app-child-comp> -->
+<!--while fetching simle variable -->
+<app-child-comp [inherit2]="parentChild_Obj"></app-child-comp>
+<!--while fetching object-->
+
+<!--👉 make a component reusable -->
+<div *ngFor="let data of parentToChild_Arr">
+  <app-child-arr-comp [hero]="data"></app-child-arr-comp>
+</div>
+
+<!--👉 send data from child to parent using eventEmitter(it calls parent's func from child) :- make a child component, lets declare a function in parent's TS now bind it with child selector with yourTokenNameWhatever as (yourTokenNameWhatever)='funcName($event)' in parent's html or whereEver this child comp's selector is being used,  now go to child's ts and import output and eventEmitter from @angular/core , then write @output()  yourTokenNameWhatever :EventEmitter<dataType> =new EventEmitter() before constructor , and in the same file's ngOnInit{this.yourTokenNameWhatever.emit("whateverYourArgs")} note this emit func is auto generated when we use eventEmitter -->
+<h3>sending data to parent from child</h3>
+<app-child-to-parent
+  (childToParentData)="childToParent($event)"
+></app-child-to-parent>
+
+<br />
+
+<h3>{{ childToPar.name }}</h3>
+<h3>{{ childToPar.age }}</h3>
+
+<!--👉 Pips (|) in Angular : used to change the format of string, date currency or anything else in our desired format , it's used as {{ourVariable | funToFormat }} as ex 👇-->
+<h4>{{ title | uppercase }}</h4>
+<!-- 👉now title which is in lowerCase   in ts is converted to upperCase here due to pipe and func-->
+<div>{{ today | date : "fullDate" }}</div>
+<!--lets declare a today var in ts and initialize it with date.Now(); now here if we don't use pipe with date it will just show in MilliSecond so we have to use pipe with date or pipe with date:'fullDate'-->
+<!-- we can use all str arr or any JS fun with pip as exp below 👇 we are using slice with str var from TS -->
+<div>{{ str }}</div>
+<!-- will show full StringWithPips as declared but with slice:2:5 it will slice 2 index from start  and till 5 index -->
+<div>{{ str | slice : 1 : 9 }}</div>
+<!-- pips with currency  -->
+<div>{{ val | currency : "CAD" }}</div>
+<!--here CAD is for canadian dolor like wise we can use USD for american -->
+
+<!--👉 routing : if you didn't choose routing opt while project creation and wish now to add , run command 👉 ng generate module app-routing --flat --module=app  -->
+<!--👉 but if a routing.modules.ts file is available in folders means routing is already selected yes so go to fileName.routing.modules.ts file and in const:routs{
+  create a obj as path:'asYouWish', component: componetNameToRedirect
+  
+    and import this same component at the top as import comp from folderName
+    now repeat this same process to route another component  
+    now go to the page where we have to route our comps and add as many  anchor tags as comps you have to route but instead of href attribute we have to use routerLink='pathWhichGivenInRoutingModule' then use <router-outlet></router-outlet> there for Ex👇
+}-->
+
+<h3>admin pages</h3>
+<br />
+<a routerLink="admin/login">admin-login</a>
+<br />
+<br />
+<a routerLink="admin/list">admin-list</a>
+<br />
+<br />
+<h3>visitors pages</h3>
+<br />
+<a routerLink="visitors/login">login</a>
+<br />
+<br />
+<a routerLink="visitors/list">list</a>
+<br />
+<br />
+<a routerLink="routingDemo">Routing Demo</a> <br />
+<br />
+<a routerLink="routingAdmin">Routing Admin</a>
+<br />
+<br />
+
+<a routerLink="routing">Routing Recap</a>
+<br />
+<br />
+
+<!-- 👉 how to create 404 page : create a not found comp and add it to routing module provide ** in path there (it's known as wildccard means it will appear when user request for a page which doesn't exists)-->
+
+<a routerLink="about">About</a>
+<br />
+<br />
+<a routerLink="contactUs">contactUs</a>
+<!--it will call pageNotFound since contactUs page is unavailable -->
+<br />
+<br />
+
+<a routerLink="routing">Routing Recap</a>
+<br />
+<br />
+<router-outlet></router-outlet>
+
+<!--👉 custom directives in angular :directives are used to manipulate in DOM ex ngFor ngIf switchCase    
+custom directives are used to reflect our desired changes on group of elements (on which it is used) 
+run command to create custom directives 👉 ng g directive yourDirectiveName 
+then go to its TS file and add ElementRef in import list from @angular/core  
+now in export's constructor block create an instance of elementRef with any name 
+as constructor(private el:ElementRef){
+  now here  we can access nativeElement property of elementRef through its obj el now add style.anyCssPropery="value"
+for use we have selector in same ts file , add this sector on any element as <p yourCustomDirSelector>your content</p> changes will reflect there 
+} -->
+<p appCustomDirective>style by custom directive</p>
+
+<!-- 👉 services in angular : services in angular used to share data with more than one comp , services are neither comp dependent nor module dependent they are fully independent we can use anywhere
+run command to create 👉 ng g service yourServiceName 
+go to our service.ts file let create a func name getData (){
+  return {
+name:'anil',
+age:30,
+id:10
+  }
+}
+
+import it in ts file of comp where you want to use as import {yourServiceName} from './folderPath'
+and create an instance of this serviceCom in same ts 's constructor as private userDAta : UserDataServiceService{console.warn(this.userDAta.getData());}
+
+-->
+<h4>{{ nameFrmServices }}</h4>
+
+<!-- API calling in angular -->
+
+<!--👉 for api call in angular we need service where api is called , so first create a service by ng g service serviceName now go to its ts file and import {httpClient} from @angular/common/http  now go to constructor create an injectable instance with private access modifier as constructor (private anyName:httpClient){} now create a func for api call
+  getData(){let url = "apiUrl";return this.anyNameInConstForHttpClient.get(url);} for api call , now go to app module .ts and import httpClientModule from  @angular/common/http,also
+  add httpClientModule into import 
+  now go to comp ts where we want to fetch data from api 
+  import serviceName ./serviceFolderPath
+  create an instance of this service in constructor there and add this.instanceName.funcInServiceTsForApiCall().subscribe(data=>{console.log(data)})
+}-->
+
+<!-- show data received from api in tabular form -->
+
+<h4>data from API</h4>
+<table border="1" style="margin: 20px 0 20px 40px">
+  <tbody>
+    <tr>
+      <th>Id</th>
+      <th>Title</th>
+      <th>completed</th>
+    </tr>
+    <tr *ngFor="let item of apiDATA">
+      <td>{{ item.id }}</td>
+      <td>{{ item.title }}</td>
+      <td>{{ item.completed }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<!--👉 model : model define ds and validations it's part of ts  all we have to do is define an interface in ts or services as interface anyName {
+  name:string,
+  id:number,
+  indian:true,
+  address:any
+}for the data which we want to use in our func  remember to import this as import interfaceName from path, where we will use func to return interface type data  -->
+
+<!--👉 module recap : ng g m moduleName :=> now create a component within it as ng g c module/compName, now go to the ts file of component where it's to be used and import and include in imports its handle and path
+now go to app.routing module.ts and import components (from path,)  which you want to add as routing, now declare routes for the same comps as  const routes:Route=[{path:'login',component:loginComponent}]
+-->
+<!-- <a routerLink="routing"></a> -->
+<!-- <app-routing></app-routing> -->
+<!-- <router-outlet></router-outlet> -->
+<!--👉  routing module : create a routing module using ng g m moduleName --routing; now create components in this routing module , go to the module routing ts and import comps and create path for them , now go to the app.module.ts and import this route module there and also register in imports list
+
+👉 grouped routing : let say we have same login in user and admin so it's confusing which route is open , here group routing comes in role which provides routing name with its module name as user/login admin/login 👇
+ng g m visitor --routing
+
+all processes as like as simple routing but diff in their routing.modules.ts file 
+where in routes  we have to declare  path:'admin' , children :[{
+path:'login', component : 'loginComName'},
+{
+path:'list', component : 'listComName'}]
+
+
+👉 Lazy loading : It applies on routes,  in normal loading all the routes load initially which results in minimal speed , with lazy loading only routes needed are loaded so speed increases.
+
+ make a module with two components make routing and load comps using lazy loading
+
+
+
+-->
+
+<app-footer></app-footer>
