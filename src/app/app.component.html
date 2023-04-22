@@ -1,6 +1,6 @@
 <app-header></app-header>
 <h1>Hello {{ title }}</h1>
-<!--👉 here title is in interpolation, it is used to pass our objects, properties or functions or variables from to ts to html for ex see below-->
+<!--👉 here title is in interpolation, it is used to pass our objects, properties or functions or variables from to ts to html for ex see below👇-->
 <p>accessing title = {{ getTitle() }}</p>
 <p>accessing object = {{ obj.name }} {{ obj.age }}</p>
 <p>accessing array = {{ arr }}</p>
@@ -228,6 +228,29 @@
 <br />
 <br />
 
+<p>lazy loading</p>
+<ul>
+  <li><a routerLink="lazyloading/lazyload/lazyComp">first lazy comp</a></li>
+  <li><a routerLink="lazyloading/lazyload/lazy2comp">second lazy comp</a></li>
+</ul>
+<br />
+<br />
+<p>lazy loading user</p>
+<ul>
+  <li>
+    <a routerLink="userLazyload/userInLazy/list">user list in lazyLoading</a>
+  </li>
+  <li>
+    <a routerLink="userLazyload/userInLazy/login">user login in lazyLoading</a>
+  </li>
+</ul>
+<br />
+<br />
+<p>route revision or early loading</p>
+<ul>
+  <li><a routerLink="route/comp1">route comp1</a></li>
+  <li><a routerLink="route/comp2">route comp2</a></li>
+</ul>
 <!-- 👉 how to create 404 page : create a not found comp and add it to routing module provide ** in path there (it's known as wildccard means it will appear when user request for a page which doesn't exists)-->
 
 <a routerLink="about">About</a>
@@ -322,13 +345,224 @@ path:'login', component : 'loginComName'},
 {
 path:'list', component : 'listComName'}]
 
-
 👉 Lazy loading : It applies on routes,  in normal loading all the routes load initially which results in minimal speed , with lazy loading only routes needed are loaded so speed increases.
 
- make a module with two components make routing and load comps using lazy loading
+ make a module (ng g m moduleName --routing) with two components make routing and load comps using lazy loading 👇 
+declare their routs in routing MODULE
+now go to app.routing and declare lazy loading as
+{
+    path: 'lazyload',
+    loadChildren: () =>
+      import('./lazyloading/lazyloading.module').then(
+        (mod) => mod.LazyloadingModule
+      ),
+  },
+now call them by path before router-outlet  see above👆
 
 
+👉lazy loading component :(load component on click or when need) if components are not called on lazy loading all will be called initially which makes speed slower, so we use lazy loading to call components,  first of all import viewContainerRef and componentFactoryResolver from angular, now create private instance of them in constructor
+ as private viewConainer :ViewContainerRef,
+    private componentFactory :ComponentFactoryResolver,
 
+    view containerRef create dynamic space for our component, and componentFactoryResolver converts everything into a component
+let say we have two components to be called in lazy loading, so now go to html page call the components on two buttons click by a click function, these functions will be async like 👇
+ async loadComp2() {
+    this.viewConainer.clear();       ------- to clear 
+    const { Callinlazy2Component } = await import(
+      './callinlazy2/callinlazy2.component'
+    );
+    this.viewConainer.createComponent(
+      this.componentFactory.resolveComponentFactory(Callinlazy2Component)
+    );
+  }
+-->
+<p>lazy loading component</p>
+<button (click)="loadComp1()">call comp1 in lazy loading mode</button>
+<button (click)="loadComp2()">call comp2 in lazy loading mode</button>
+
+<!-- 
+
+👉angular form : reactive form (control data in ts ) and template driven form(all controls in html page only) 
+
+data flow👇
+form >.ts file > service > apiCall > server
+
+1.) template driven form :- basic and simple form mostly written in html 
+
+*)steps to create👇
+
+go to app.module.ts import form module form @angular/forms and register it as well
+
+now go to app.html create
+<form #userForm="ngForm" (ngSubmit)="onSubmit(userForm.value)"> here ngForm is directive assigned to form id userForm and userForm's value is being passed as userForm.value 
+  <input type="text" name="email" ngModel/><br><br>  ngModel binds fields to form and name is must in template driven form
+  <input type="password" name="password" ngModel/><br><br>
+  <button type="submit">login</button><br>
+</form>
+
+imp: to add validators in template driven forms add a name and ngModel is must
+also assign ngModel to the id of field let say it's #email1 so #email1=ngModel
+now add required keyword as property -->
+<br />
+<br />
+<p>template driven form 👇</p>
+
+<div class="col-sm-6">
+  <form #userForm="ngForm" (ngSubmit)="onSubmit(userForm.value)">
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">Email address</label>
+      <input
+        type="email"
+        class="form-control"
+        ngModel
+        name="email1"
+        required
+        id="exampleInputEmail1"
+        aria-describedby="emailHelp"
+        #email1="ngModel"
+      />
+      <span class="red-error" *ngIf="email1!.invalid && email1!.touched"
+        >field is required</span
+      >
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Password</label>
+      <input
+        type="password"
+        name="pass"
+        ngModel
+        class="form-control"
+        id="exampleInputPassword1"
+        pass="ngModel"
+        required
+        #password1="ngModel"
+      />
+      <span class="red-error" *ngIf="password1.invalid && password1.touched"
+        >field is required</span
+      >
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+<br />
+<br />
+
+<!-- 
+  👉 add bootstrap in angular form first add bootstrap
+  run command 👉ng add @ng-bootstrap/schematics 
+  now go to bootstrap webpage and just add  needed classes as above 👆
+
+  👉 Reactive form : go to app module .ts import reactive forms module from @angular/core   now either create your own form or go to bootstrap webpage and copy form code and paste here to customize 
+  now go app component.ts file import FormControl,FormGroup from @angular/forms
+  on html page  define form attribute as [formGroup]='anyName' in form tag
+now in ts file export section define this form group func as 
+loginForm = new formGroup({
+  pass form fields names defined (note each field of form must  formControlName='anyName')
+for ex 👇
+ loginForm = new FormGroup(
+    { email: new FormControl(''),
+     pass: new FormControl('') }
+  );
+
+  now for adding validator to our form fields go to import validator from @angular/forms  and just add it in ts parameters of formGroups as 
+  loginForm = new FormGroup(
+    { email: new FormControl('', Validators.required),
+     pass: new FormControl('', Validators.required) }
+  );
+for invalid fields add red border by inserting invalid class by inspection as👇
+
+input.ng-invalid/valid{border:1px solid color}
+imp: form group for reactive forms and formControl name for each fields is imp in reactive forms
+for err msg on invalid field valid let's create a get func as
+get anyFieldName (){return this.anyFormName.get('anyFieldName')}
+now in html create an err msg as <span *ngIf="anyFieldName-invalid && email-touch">Email is required</span>
+ -->
+<p>reactive form 👇</p>
+<div class="col-sm-6">
+  <form [formGroup]="loginForm">
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">Email address</label>
+      <input
+        type="email"
+        class="form-control"
+        formControlName="email"
+        placeholder="email"
+        [ngStyle]="{
+          border: email?.invalid && email?.touched ? '1px solid red' : ''
+        }"
+      />
+      <span class="red-error" *ngIf="email!.invalid && email!.touched"
+        >Email is required</span
+      >
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Password</label>
+      <input type="password" class="form-control" formControlName="pass" />
+      <span class="red-error" *ngIf="password!.invalid && password!.touched"
+        >Password is required</span
+      >
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+<br />
+<br />
+<!-- 
+
+👉 Prefilled form (template driven) : import formModules form @angular/forms in module.ts
+
+go to ts define a object of anyName fill it with desired prefilled values need to forms 
+add an id to form and assign it ngForm directive now add fields with unique name , 
+object's key defined in ts with prefilled values must be bind with each  ngModel to every field
+
+
+ -->
+
+<p>Prefilled form</p>
+<form #prefilled="ngForm">
+  <input
+    type="text"
+    name="prefilledEmail"
+    [ngModel]="prefilledValues.email"
+  /><br /><br />
+  <input
+    type="password"
+    name="prefilledPassword"
+    [ngModel]="prefilledValues.pass"
+  /><br /><br />
+  <input
+    type="text"
+    name="prefilledAdd"
+    [ngModel]="prefilledValues.add"
+  /><br /><br />
+  <input
+    type="text"
+    name="prefilledMob"
+    [ngModel]="prefilledValues.mob"
+  /><br /><br />
+  <button type="submit">save</button>
+</form>
+
+<!-- 
+👉 prefilled form (reactive form ): import formsModule in app module.ts from angular/forms
+in html create a form and provide it  a form group since form group is must in reactive forms and add bind a function to ngSubmit 
+now go to component.ts file import formGroup, formControl and validator from angular form
+ 
+now add formControlName to each filled with unique values 
+go to ts assign formGroup's value as new formGroup and pass fields formControlName's value as new formControl
 -->
 
+<form [formGroup]="preFilledReactive" (ngSubmit)="collectData()">
+  <input
+    type="text"
+    formControlName="preReactiveEmail"
+  /><br /><br />
+  <input
+    type="password"
+    formControlName="preReactivePass"
+  /><br /><br />
+  <button type="submit">Login</button>
+</form>
 <app-footer></app-footer>

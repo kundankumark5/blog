@@ -4,7 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { UsersModule } from './users/users.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { ModalDismissReasons, NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -22,6 +22,10 @@ import { RecapModule } from './recap/recap.module';
 import { AdminModule } from './admin/admin.module';
 import { GroupedModuleModule } from './grouped-module/grouped-module.module';
 import { VisitorsModule } from './visitors/visitors.module';
+import { RouteModule } from './route/route.module';
+import { Callinlazy1Component } from './callinlazy1/callinlazy1.component';
+import { Callinlazy2Component } from './callinlazy2/callinlazy2.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,6 +39,8 @@ import { VisitorsModule } from './visitors/visitors.module';
     RoutingAdminComponent,
     PageNotFoundComponent,
     CustomDirectiveDirective,
+    Callinlazy1Component,
+    Callinlazy2Component,
   ],
   imports: [
     BrowserModule,
@@ -49,6 +55,8 @@ import { VisitorsModule } from './visitors/visitors.module';
     AdminModule,
     GroupedModuleModule,
     VisitorsModule,
+    RouteModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

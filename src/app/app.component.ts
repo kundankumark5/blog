@@ -1,12 +1,23 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  ViewContainerRef,
+  ComponentFactoryResolver,
+} from '@angular/core';
 import { UserDataServiceService } from './user-data-service.service';
 import { Service4APIService } from './service4-api.service';
+import { Callinlazy1Component } from './callinlazy1/callinlazy1.component';
+import { Callinlazy2Component } from './callinlazy2/callinlazy2.component';
+import {
+  NgForm,
+  FormControl,
+  Validator,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 interface Alert {
   type: string;
   message: string;
 }
-
-
 
 const ALERTS: Alert[] = [
   {
@@ -48,6 +59,14 @@ const ALERTS: Alert[] = [
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
+  loginForm = new FormGroup({
+    email: new FormControl('', Validators.required),
+    pass: new FormControl('', Validators.required),
+  });
+  onSubmit(data: any) {
+    console.warn(data);
+  }
+
   title = 'blog';
   show = true;
   err = false;
@@ -121,6 +140,8 @@ export class AppComponent {
   nameFrmServices = '';
   apiDATA: any = [];
   constructor(
+    private viewConainer: ViewContainerRef,
+    private componentFactory: ComponentFactoryResolver,
     private userDAta: UserDataServiceService,
     private apiCall: Service4APIService
   ) {
@@ -132,6 +153,24 @@ export class AppComponent {
       console.log(resultFromAPI);
       this.apiDATA = resultFromAPI;
     });
+  }
+  async loadComp1() {
+    this.viewConainer.clear();
+    const { Callinlazy1Component } = await import(
+      './callinlazy1/callinlazy1.component'
+    );
+    this.viewConainer.createComponent(
+      this.componentFactory.resolveComponentFactory(Callinlazy1Component)
+    );
+  }
+  async loadComp2() {
+    this.viewConainer.clear();
+    const { Callinlazy2Component } = await import(
+      './callinlazy2/callinlazy2.component'
+    );
+    this.viewConainer.createComponent(
+      this.componentFactory.resolveComponentFactory(Callinlazy2Component)
+    );
   }
 
   close(alert: Alert) {
@@ -145,6 +184,27 @@ export class AppComponent {
   today = Date.now();
   str = 'StringWithPips';
   val = 10;
+  get email() {
+    return this.loginForm.get('email');
+  }
 
- 
+  get password() {
+    return this.loginForm.get('pass');
+  }
+
+  prefilledValues = {
+    email: 'test@mail.com',
+    pass: 12345,
+    add: 'Noida',
+    mob: 56789678678,
+  };
+
+  preFilledReactive = new FormGroup({
+    preReactiveEmail: new FormControl('anil@mail.com'),
+    preReactivePass: new FormControl('1234'),
+  });
+
+  collectData(){
+    console.warn(this.preFilledReactive.value);
+  }
 }
